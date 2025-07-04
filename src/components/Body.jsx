@@ -36,7 +36,7 @@ const Body = () => {
   }, []);
 
   return (
-    <div>
+    <div className='w-full h-full '>
       <NavBar />
       <Outlet />
       {/* <Feed /> */}

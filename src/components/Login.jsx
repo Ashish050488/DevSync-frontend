@@ -1,95 +1,113 @@
-import React,{useState} from 'react'
-import * as SVG from '../SVG/Svg'
-import axios from 'axios'
-import { useDispatch } from 'react-redux';
-import { addUser } from '../utils/userSlice';
-import { useNavigate } from 'react-router-dom';
-const Login = () => {
-  
-  const [emailId,setEmailId] =  useState("ashar050488@gmail.com");
-  const [password,setPassword] =  useState("Ash1234@")
-  
-  const dispatch =useDispatch();
+import { useState } from "react"
+import axios from "axios"
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { addUser } from "../utils/userSlice" // ✅ Adjust path as needed
+
+export default function Login({ onSwitchToSignup }) {
+  const [formData, setFormData] = useState({
+    emailId: "", // ✅ match key expected by backend
+    password: "",
+  })
+  const [error, setError] = useState("")
+  const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const handleLogin = async () => {
-  try {
-    const res = await axios.post(
-      'http://localhost:7777/login',
-      {
-        emailId, // ✅ correct key name
-        password
-      },
-      {
-        withCredentials: true // ✅ correct placement
-      }
-    );
-    dispatch(addUser(res.data.user));
-    return navigate('/');
-  } catch (error) {
-    console.error('Login error:', error.response?.data || error.message);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
   }
-};
 
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    try {
+      const res = await axios.post(
+        "http://localhost:7777/login",
+        {
+          emailId: formData.emailId,
+          password: formData.password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      dispatch(addUser(res.data.user))
+      navigate("/")
+    } catch (err) {
+      const msg = err.response?.data || "Login failed. Try again."
+      setError(msg)
+    }
+  }
 
   return (
-    <div className='flex justify-center my-10'>
-      <div className="card bg-base-300 w-96 shadow-sm">
-        <div className="card-body ">
-          <h2 className="card-title mb-5 justify-center">Login</h2>
-          <div className=' flex flex-col justify-center ml-2 gap-4'>
+    <div className="w-full max-w-md mx-auto bg-white p-8 md:p-12">
+      <div className="text-center mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-black mb-2">Login to DevSync</h1>
+      </div>
 
-            <div>
-              <label className="input validator">
-                <input 
-                type="email" 
-                placeholder="mail@site.com" 
-                required
-                value={emailId}
-                onChange={(e)=>setEmailId(e.target.value)}
-                 />
-                {SVG.mail}
-              </label>
-              <div className="validator-hint hidden">Enter valid email address</div>
-            </div>
-
-
-            <div>
-              <label className="input validator">
-                
-                <input
-                  type="password"
-                  required
-                 value={password}
-                onChange={(e)=>setPassword(e.target.value)}
-                  placeholder="Password"
-                  minLength="8"
-                  pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
-                  title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
-                />
-                {SVG.key}
-              </label>
-              <p className="validator-hint hidden">
-                Must be more than 8 characters, including
-                <br />At least one number <br />At least one lowercase letter <br />At least one uppercase letter
-              </p>
-            </div>
-
-          </div>
-
-
-
-
-          <div>
-            <div className="card-actions justify-center mt-5">
-              <button className="btn btn-primary" onClick={handleLogin}>Login</button>
-            </div>
-          </div>
-
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Email Field */}
+        <div>
+          <label htmlFor="emailId" className="block text-sm font-medium text-black mb-2">
+            Email
+          </label>
+          <input
+            type="email"
+            id="emailId"
+            name="emailId"
+            value={formData.emailId}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-4 border-2 border-black rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black bg-white"
+            placeholder="Enter your email"
+          />
         </div>
+
+        {/* Password Field */}
+        <div>
+          <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-4 border-2 border-black rounded-lg text-black placeholder-gray-500 focus:outline-none focus:border-black bg-white"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        {/* Error Message */}
+        {error && (
+          <p className="text-sm text-red-500 font-medium text-center -mt-4">{error}</p>
+        )}
+
+        {/* Login Button */}
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-4 px-6 rounded-lg font-medium hover:bg-gray-900 transition-colors duration-200 text-base"
+        >
+          Login
+        </button>
+      </form>
+
+      {/* Switch to Signup */}
+      <div className="text-center mt-8">
+        <p className="text-sm text-black">
+          Don't have an account?{" "}
+          <button
+            onClick={onSwitchToSignup}
+            className="font-medium text-black underline hover:no-underline transition-all duration-200"
+          >
+            Sign up
+          </button>
+        </p>
       </div>
     </div>
   )
 }
-
-export default Login
