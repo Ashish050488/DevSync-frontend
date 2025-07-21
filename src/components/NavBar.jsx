@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { baseURL } from "../api/API"
+import { baseURL } from "../api/api"
 import { removeUser } from "../utils/userSlice"
 
 export default function Navbar() {
@@ -23,14 +23,13 @@ export default function Navbar() {
       dispatch(removeUser())
       navigate("/login")
     } catch (error) {
-      console.log("Logout failed:", error.message)
     }
   }
 
   return (
     <nav className="w-full bg-white border-b-4 border-black sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-8 lg:px-12">
-        <div className="flex items-center justify-between h-24">
+      <div className="max-w-7xl mx-auto  lg:px-12">
+        <div className="flex items-center justify-between h-18">
           {/* Logo Section */}
           <div className="flex items-center cursor-pointer" onClick={() => navigate("/")}>
             <div className="border-4 border-black bg-black px-6 py-3">

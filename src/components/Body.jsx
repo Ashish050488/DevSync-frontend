@@ -1,15 +1,10 @@
-import React, { use } from 'react'
-import { Outlet } from 'react-router-dom'
-import NavBar from './NavBar'
-import Feed from './Feed'
-import axios from 'axios'
-import { baseURL } from '../api/API'
-import { useDispatch } from 'react-redux'
-import { addUser } from '../utils/userSlice'
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { baseURL } from "../api/api";
+import { addUser } from "../utils/userSlice";
+import NavBar from "./NavBar";
 
 const Body = () => {
   const dispatch = useDispatch();
@@ -24,23 +19,30 @@ const Body = () => {
       });
       dispatch(addUser(res.data));
     } catch (err) {
-      if(err.status === 401){
+      if (err?.response?.status === 401) {
         navigate("/login");
       }
-      console.error(err);
     }
   };
 
   useEffect(() => {
-      fetchUser();
+    fetchUser();
   }, []);
 
   return (
-    <div className='w-full h-full '>
-      <NavBar />
-      <Outlet />
-      {/* <Feed /> */}
+    <div className="h-screen flex flex-col overflow-hidden">
+      <header className="h-16">
+        <NavBar />
+      </header>
+
+      {/* Main is exactly (100vh - 64px) */}
+      <main className="flex-1 overflow-hidden">
+        <div className="h-full overflow-hidden">
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };
+
 export default Body;

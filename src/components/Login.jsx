@@ -6,8 +6,8 @@ import { addUser } from "../utils/userSlice" // ✅ Adjust path as needed
 
 export default function Login({ onSwitchToSignup }) {
   const [formData, setFormData] = useState({
-    emailId: "", // ✅ match key expected by backend
-    password: "",
+    emailId: "kumar000@gmail.com", // ✅ match key expected by backend
+    password: "Ash1234@",
   })
   const [error, setError] = useState("")
   const dispatch = useDispatch()
@@ -110,4 +110,4 @@ export default function Login({ onSwitchToSignup }) {
       </div>
     </div>
   )
-}
+} 

@@ -34,7 +34,7 @@ export default function Signup({ onSwitchToLogin }) {
         }
       )
       dispatch(addUser(res.data.user))
-      navigate("/")
+      navigate("/login")
     } catch (err) {
       const msg = err.response?.data?.message || "Signup failed. Try again."
       setError(msg)
