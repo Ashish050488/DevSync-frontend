@@ -92,6 +92,14 @@ export default function Navbar() {
                       className="px-5 py-4 border-b-4 border-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-100">
                           <span className="text-xs font-bold tracking-wider font-mono">CONNECTION</span>
                       </div>
+                      <div 
+                      onClick={()=>{
+                        navigate('/requests')
+                        closeDropdown()
+                      }}
+                      className="px-5 py-4 border-b-4 border-black hover:bg-black hover:text-white cursor-pointer transition-colors duration-100">
+                          <span className="text-xs font-bold tracking-wider font-mono">REQUESTS</span>
+                      </div>
 
                       <div
                         onClick={handleLogout}

@@ -6,6 +6,7 @@ import AuthPage from "./components/AuthPage";
 import Connection from './components/Connection'
 import { Provider } from "react-redux";
 import appStore from "./utils/appStore";
+import Requests from "./components/Requests" 
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/auth" element={<AuthPage />} />
             <Route path="/connection" element={<Connection />} />
-            <Route path="/requests" element={<Connection />} />
+            <Route path="/requests" element={<Requests />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
