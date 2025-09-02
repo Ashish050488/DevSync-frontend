@@ -1,20 +1,29 @@
-import React, { useEffect } from 'react'
-import { baseURL } from "../api/api"
+"use client"
+
+import { useEffect } from "react"
 import axios from "axios"
-import { useDispatch, useSelector } from 'react-redux'
-import { addRequests } from "../utils/requestSlice"
+import { useDispatch, useSelector } from "react-redux"
 import { FaCheck, FaTimes } from "react-icons/fa"
+import { baseURL } from "../api/api"
+import { addRequests,removeRequest } from "../utils/requestSlice"
 
 const Requests = () => {
-  const requests = useSelector((store) => store.request)
+  const requests = useSelector((store) => store.request);
   const dispatch = useDispatch();
+
+
+  const reviewRequest = async (status, _id) => {
+    try {
+      await axios.post(`${baseURL}/request/review/${status}/${_id}`, {}, { withCredentials: true });
+      dispatch(removeRequest(_id))
+    } catch (err) {
+      console.log(err)
+    }
+  }
 
   const fetchRequest = async () => {
     try {
-      const res = await axios.get(baseURL + "/user/requests/received", {
-        withCredentials: true
-      });
-
+      const res = await axios.get(`${baseURL}/user/requests/received`, { withCredentials: true })
       dispatch(addRequests(res.data.data))
     } catch (err) {
       console.log(err)
@@ -22,58 +31,83 @@ const Requests = () => {
   }
 
   useEffect(() => {
-    fetchRequest();
+    fetchRequest()
   }, [])
 
-  if (!requests) return <h1 className="text-center mt-10 text-lg">Loading...</h1>;
-  if (requests.length === 0) return <h1 className="text-center mt-10 text-lg">No Requests found</h1>;
+  // Loading + Empty (left-aligned, monochrome)
+  if (!requests) {
+    return (
+      <div className="w-full max-w-3xl px-4 py-6">
+        <h2 className="text-base text-black/70">Loading...</h2>
+      </div>
+    )
+  }
+  if (requests.length === 0) {
+    return (
+      <div className="w-full max-w-3xl px-4 py-6">
+        <h2 className="text-base text-black/70">No requests found</h2>
+      </div>
+    )
+  }
 
   return (
-    <div className="max-w-3xl mx-auto my-10 px-4 ">
-      <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-8">
-        Requests
-      </h1>
-      <div className="grid gap-6 md:grid-cols-2">
+    <div className="w-full max-w-3xl px-4 py-6">
+      <h1 className="mb-4 text-2xl font-semibold text-black">Requests</h1>
+
+      <div className="grid gap-4 md:grid-cols-2">
         {requests.map((req) => {
-          const { firstName, photoUrl, lastName, about, age, gender } = req.fromUserId;
+          const u = req?.fromUserId || {}
+          const fullName = [u.firstName, u.lastName].filter(Boolean).join(" ") || "Unknown User"
+          const details = [u.gender ? String(u.gender) : null, u.age ? `${u.age}` : null].filter(Boolean).join(" • ")
+
           return (
             <div
               key={req._id}
-              className="flex items-center justify-between p-4 bg-white rounded-2xl shadow-md hover:shadow-xl transition"
+              className="flex items-start justify-between gap-4 rounded-md border border-black/10 bg-white p-4"
             >
-              {/* Left Profile Info */}
-              <div className="flex items-center gap-4">
+              {/* Profile */}
+              <div className="flex min-w-0 items-start gap-3">
                 <img
-                  alt={`${firstName} ${lastName}`}
-                  className="w-16 h-16 rounded-full object-cover border"
-                  src={photoUrl}
+                  src={u.photoUrl || "/placeholder.svg?height=64&width=64&query=user%20avatar"}
+                  alt={fullName}
+                  className="h-12 w-12 shrink-0 rounded-full border border-black/10 object-cover"
                 />
-                <div>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {firstName} {lastName}
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    {gender} • {age ? `${age} years old` : "Age not available"}
-                  </p>
-                  <p className="text-sm text-gray-600">{about || "No bio available"}</p>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-medium text-black">{fullName}</div>
+                  {details ? (
+                    <div className="truncate text-xs text-black/60">{details}</div>
+                  ) : (
+                    <div className="truncate text-xs text-black/60">Info unavailable</div>
+                  )}
+                  <div className="mt-1 line-clamp-2 text-xs text-black/70">{u.about || "No bio available"}</div>
                 </div>
               </div>
 
-              {/* Right Action Buttons */}
-              <div className="flex gap-3">
-                <button className="p-2 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition">
-                  <FaCheck size={18} />
+              {/* Actions (monochrome, no animations) */}
+              <div className="flex shrink-0 items-center gap-2">
+                <button
+                  aria-label="Accept request"
+                  onClick={() => reviewRequest("accepted", req._id)}
+                  className="inline-flex items-center justify-center rounded-md border border-black bg-black px-3 py-1 text-xs font-medium text-white"
+                >
+                  <FaCheck className="mr-1 h-3 w-3" />
+                  Accept
                 </button>
-                <button className="p-2 bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition">
-                  <FaTimes size={18} />
+                <button
+                  aria-label="Reject request"
+                  onClick={() => reviewRequest("rejected", req._id)}
+                  className="inline-flex items-center justify-center rounded-md border border-black px-3 py-1 text-xs font-medium text-black"
+                >
+                  <FaTimes className="mr-1 h-3 w-3" />
+                  Reject
                 </button>
               </div>
             </div>
-          );
+          )
         })}
       </div>
     </div>
-  );
+  )
 }
 
 export default Requests
