@@ -5,16 +5,15 @@ import axios from "axios"
 import { useDispatch, useSelector } from "react-redux"
 import { FaCheck, FaTimes } from "react-icons/fa"
 import { baseURL } from "../api/api"
-import { addRequests,removeRequest } from "../utils/requestSlice"
+import { addRequests, removeRequest } from "../utils/requestSlice"
 
 const Requests = () => {
-  const requests = useSelector((store) => store.request);
-  const dispatch = useDispatch();
-
+  const requests = useSelector((store) => store.request)
+  const dispatch = useDispatch()
 
   const reviewRequest = async (status, _id) => {
     try {
-      await axios.post(`${baseURL}/request/review/${status}/${_id}`, {}, { withCredentials: true });
+      await axios.post(`${baseURL}/request/review/${status}/${_id}`, {}, { withCredentials: true })
       dispatch(removeRequest(_id))
     } catch (err) {
       console.log(err)
@@ -88,17 +87,17 @@ const Requests = () => {
                 <button
                   aria-label="Accept request"
                   onClick={() => reviewRequest("accepted", req._id)}
-                  className="inline-flex items-center justify-center rounded-md border border-black bg-black px-3 py-1 text-xs font-medium text-white"
+                  className="group inline-flex items-center justify-center rounded-md border border-black bg-black px-3 py-1 text-xs font-medium text-white transition-transform transition-colors duration-150 ease-out hover:-translate-y-0.5 hover:bg-black/90 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 motion-reduce:transform-none"
                 >
-                  <FaCheck className="mr-1 h-3 w-3" />
+                  <FaCheck className="mr-1 h-3 w-3 transition-transform duration-150 ease-out group-hover:translate-x-0.5 motion-reduce:transform-none" />
                   Accept
                 </button>
                 <button
                   aria-label="Reject request"
                   onClick={() => reviewRequest("rejected", req._id)}
-                  className="inline-flex items-center justify-center rounded-md border border-black px-3 py-1 text-xs font-medium text-black"
+                  className="group inline-flex items-center justify-center rounded-md border border-black px-3 py-1 text-xs font-medium text-black transition-transform transition-colors duration-150 ease-out hover:-translate-y-0.5 hover:bg-black/5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 motion-reduce:transform-none"
                 >
-                  <FaTimes className="mr-1 h-3 w-3" />
+                  <FaTimes className="mr-1 h-3 w-3 transition-transform duration-150 ease-out group-hover:-translate-x-0.5 motion-reduce:transform-none" />
                   Reject
                 </button>
               </div>

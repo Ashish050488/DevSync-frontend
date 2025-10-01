@@ -1,13 +1,14 @@
 import axios from "axios";
 import { baseURL } from "../api/api";
 import { useDispatch } from "react-redux";
-import removeUserFromFeed from "../utils/feedSlice";
+import {removeUserFromFeed} from "../utils/feedSlice";
 
 const UserCard = ({ user }) => {
   const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
   const dispatch = useDispatch();
 
   const handleSendRequest = async (status, userId) => {
+    console.log(`API Call Triggered in UserCard for user ${userId} with status: ${status}`);
     try {
       await axios.post(
         `${baseURL}/request/send/${status}/${userId}`,
@@ -15,6 +16,7 @@ const UserCard = ({ user }) => {
         { withCredentials: true }
       );
       dispatch(removeUserFromFeed(userId));
+      navigate("/");
     } catch (err) {
       console.error(err);
     }
