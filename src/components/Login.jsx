@@ -3,11 +3,12 @@ import axios from "axios"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { addUser } from "../utils/userSlice" // ✅ Adjust path as needed
+import { baseURL } from "../api/api"
 
 export default function Login({ onSwitchToSignup }) {
   const [formData, setFormData] = useState({
-    emailId: "kumar000@gmail.com", // ✅ match key expected by backend
-    password: "Ash1234@",
+    emailId: "", // ✅ match key expected by backend
+    password: "",
   })
   const [error, setError] = useState("")
   const dispatch = useDispatch()
@@ -23,8 +24,7 @@ export default function Login({ onSwitchToSignup }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const res = await axios.post(
-        "http://localhost:7777/login",
+      const res = await axios.post(baseURL + "/login",
         {
           emailId: formData.emailId,
           password: formData.password,

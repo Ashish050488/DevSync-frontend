@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import { addUser } from "../utils/userSlice" // ✅ Adjust the path as needed
 import { Link } from "react-router-dom"
+import { baseURL } from "../api/api"
 
 export default function Signup({ onSwitchToLogin }) {
   const [formData, setFormData] = useState({
@@ -27,7 +28,7 @@ export default function Signup({ onSwitchToLogin }) {
     e.preventDefault()
     try {
       const res = await axios.post(
-        "http://localhost:7777/signup",
+       baseURL + "/signup",
         formData,
         {
           withCredentials: true,
