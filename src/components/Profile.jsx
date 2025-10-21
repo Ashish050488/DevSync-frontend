@@ -58,20 +58,20 @@ export default function Profile() {
   }
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    if (name === "skills") {
-      setSkillsInput(value)
-      setFormData((p) => ({
-        ...p,
-        skills: value
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean),
-      }))
-    } else {
-      setFormData((p) => ({ ...p, [name]: value }))
-    }
+  const { name, value } = e.target
+  if (name === "skills") {
+    setSkillsInput(value)
+    setFormData((p) => ({
+      ...p,
+      skills: value.split(",").map((s) => s.trim()).filter(Boolean),
+    }))
+  } else if (name === "age") {
+    setFormData((p) => ({ ...p, [name]: Number(value) }))
+  } else {
+    setFormData((p) => ({ ...p, [name]: value }))
   }
+}
+
 
   const steps = ["Basic", "Contact", "Skills"]
 
