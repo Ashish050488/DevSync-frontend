@@ -1,2 +1,4 @@
-// export const baseURL = '/api'; 
-export const baseURL = 'http://localhost:7777'; 
+export const baseURL =
+  import.meta.env.MODE === 'production'
+    ? import.meta.env.VITE_PROD_URL
+    : import.meta.env.VITE_BASE_URL;
